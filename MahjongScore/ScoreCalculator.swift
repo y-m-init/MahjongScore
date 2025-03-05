@@ -63,18 +63,16 @@ struct ScoreCalculator {
         }.sorted { Int($0.score)! > Int($1.score)! }
         
         // 30,000点（基準点）との差を計算（1000点単位のポイント変換 / 切り捨て）
-        sortedPlayers = sortedPlayers.map { player in
-            var updatedPlayer = player
-            updatedPlayer.rankScore = (Int(player.score) ?? baseScore - baseScore) / pointUnit
-            return updatedPlayer
+        for i in 0..<sortedPlayers.count {
+            if let score = Int(sortedPlayers[i].score) {
+                sortedPlayers[i].rankScore = (score - baseScore) / pointUnit
+            }
         }
-        
         // ウマの適用（1位・2位が加点、3位・4位が減点）
         sortedPlayers[0].rankScore += umaValues.high
         sortedPlayers[1].rankScore += umaValues.low
         sortedPlayers[2].rankScore -= umaValues.low
         sortedPlayers[3].rankScore -= umaValues.high
-        
         // オカの適用（1位のプレイヤーにオカを加算）
         sortedPlayers[0].rankScore += okaValue
         
