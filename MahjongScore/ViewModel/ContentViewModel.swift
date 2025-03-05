@@ -9,9 +9,21 @@ import SwiftUI
 
 // MARK: - ContentViewのViewModel
 class ContentViewModel: ObservableObject {
+    
+    
+    
+    // MARK: - デバッグ用。初期スコア　※masterブランチにマージするときは削除すること！
+    static let debugInitialScores = ["35000", "30000", "20000", "15000"]
+    @Published var players: [Player] = zip(Strings.defaultPlayers, debugInitialScores).map { name, score in
+        Player(name: name, score: score, rankScore: 0)
+    }
+    
+    
+    
+    
     // MARK: - プロパティ
     /// プレイヤーのリスト（名前・スコア・順位点）
-    @Published var players: [Player] = Strings.defaultPlayers.map { Player(name: $0, score: "", rankScore: 0) }
+//    @Published var players: [Player] = Strings.defaultPlayers.map { Player(name: $0, score: "", rankScore: 0) }
     /// 選択されたウマ（デフォルトは 10-30）
     @Published var selectedUma = Strings.umaTenThirty
     /// 選択されたオカ（デフォルトは「あり」）
