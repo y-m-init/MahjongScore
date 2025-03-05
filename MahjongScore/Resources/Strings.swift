@@ -18,7 +18,6 @@ struct Strings {
     static let okaLabel = "オカ"
     static let rankLabel = "位: "
     static let pointLabel = "ポイント: "
-    // 説明文
     // ボタン文言
     static let calculateButton = "計算"
     static let okButton = "OK"
@@ -33,15 +32,18 @@ struct Strings {
     static let defaultOka = "10"
     static let defaultPlayerName = "プレイヤー"
     // ウマの種類
-    static let umaGoto = "5-10"
+    static let umaFiveTen = "5-10"
     static let umaFiveFifteen = "5-15"
-    static let umaOneTwo = "10-20"
-    static let umaOneThree = "10-30"
-    static let umaTwoThree = "20-30"
-    static let umaOptions = [umaGoto, umaFiveFifteen, umaOneTwo, umaOneThree, umaTwoThree]
+    static let umaTenTwenty = "10-20"
+    static let umaTenThirty = "10-30"
+    static let umaTwentyThirty = "20-30"
+    static let umaOptions = [umaFiveTen, umaFiveFifteen, umaTenTwenty, umaTenThirty, umaTwentyThirty]
+
     // ウマの説明文
     static let umaDescriptionFiveFifteen = "※ 5-15：雀魂友人戦ルール"
     static let umaDescriptionTenThirty = "※ 10-30：Mリーグルール"
     // オカの選択肢
-    static let okaOptions = ["あり", "なし"]
+    static let okaEnabled = "あり"
+    static let okaDisabled = "なし"
+    static let okaOptions = [okaEnabled, okaDisabled]
 }
