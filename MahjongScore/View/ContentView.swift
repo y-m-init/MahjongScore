@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    // MARK: - プロパティ
+    // MARK: - ViewModel（状態管理）
     @StateObject private var viewModel = ContentViewModel()
     
     // MARK: - メインビュー

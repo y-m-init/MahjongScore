@@ -9,7 +9,7 @@ import SwiftUI
 
 struct UmaPickerView: View {
     
-    // MARK: - プロパティ
+    // MARK: - バインディング（親ビューからのデータ）
     @Binding var selectedUma: String
     
     // MARK: - メインビュー

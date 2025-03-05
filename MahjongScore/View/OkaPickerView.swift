@@ -9,7 +9,7 @@ import SwiftUI
 
 struct OkaPickerView: View {
     
-    // MARK: - プロパティ
+    // MARK: - バインディング（親ビューからのデータ）
     @Binding var selectedOka: String
     
     // MARK: - メインビュー

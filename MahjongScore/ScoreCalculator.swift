@@ -13,7 +13,7 @@ struct ScoreCalculator {
     private static let baseScore = 30_000   // 30,000点基準
     private static let pointUnit = 1_000    // 1000点単位でポイント換算
     private static let okaDefaultValue = 20 // オカあり時の加算値
-
+    
     // MARK: - ウマの値を取得
     private static func getUmaValues(uma: String) -> (high: Int, low: Int) {
         switch uma {
@@ -55,30 +55,29 @@ struct ScoreCalculator {
     static func calculate(players: [Player], selectedUma: String, selectedOka: String) -> [Player] {
         let umaValues = getUmaValues(uma: selectedUma)
         let okaValue = selectedOka == Strings.okaEnabled ? okaDefaultValue : 0
-
+        
         // スコアをIntに変換し、降順ソート
         var sortedPlayers = players.compactMap { player -> Player? in
             guard let score = Int(player.score) else { return nil }
             return Player(name: player.name.isEmpty ? Strings.defaultPlayerName : player.name, score: "\(score)", rankScore: 0)
         }.sorted { Int($0.score)! > Int($1.score)! }
-
+        
         // 30,000点（基準点）との差を計算（1000点単位のポイント変換 / 切り捨て）
-        for i in 0..<sortedPlayers.count {
-            if let score = Int(sortedPlayers[i].score) {
-                let adjustedScore = Double(score - baseScore) / Double(pointUnit)
-                sortedPlayers[i].rankScore = Int(adjustedScore.rounded(.down))
-            }
+        sortedPlayers = sortedPlayers.map { player in
+            var updatedPlayer = player
+            updatedPlayer.rankScore = (Int(player.score) ?? baseScore - baseScore) / pointUnit
+            return updatedPlayer
         }
-
+        
         // ウマの適用（1位・2位が加点、3位・4位が減点）
         sortedPlayers[0].rankScore += umaValues.high
         sortedPlayers[1].rankScore += umaValues.low
         sortedPlayers[2].rankScore -= umaValues.low
         sortedPlayers[3].rankScore -= umaValues.high
-
+        
         // オカの適用（1位のプレイヤーにオカを加算）
         sortedPlayers[0].rankScore += okaValue
-
+        
         return sortedPlayers
     }
 }

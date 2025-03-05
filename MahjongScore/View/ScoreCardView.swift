@@ -9,6 +9,9 @@ import SwiftUI
 
 struct ScoreCardView: View {
     
+    // MARK: - 環境変数
+    @Environment(\.colorScheme) var colorScheme
+    
     // MARK: - プロパティ
     let player: Player
     let rank: Int
@@ -48,13 +51,9 @@ struct ScoreCardView: View {
     private func getBackgroundColor(_ rank: Int) -> Color {
         switch rank {
         case 1:
-            return Color(uiColor: UIColor { traitCollection in
-                traitCollection.userInterfaceStyle == .dark ? UIColor.systemYellow.withAlphaComponent(0.3) : UIColor.yellow.withAlphaComponent(0.3)
-            })
+            return colorScheme == .dark ? Color.yellow.opacity(0.3) : Color.yellow.opacity(0.3)
         default:
-            return Color(uiColor: UIColor { traitCollection in
-                traitCollection.userInterfaceStyle == .dark ? UIColor(white: 0.2, alpha: 1) : UIColor.gray.withAlphaComponent(0.1)
-            })
+            return colorScheme == .dark ? Color.gray.opacity(0.2) : Color.gray.opacity(0.1)
         }
     }
 }
