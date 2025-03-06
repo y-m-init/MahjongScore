@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9D1C57C02D782E9D0027D25C /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D1C57BF2D782E9D0027D25C /* ContentViewModel.swift */; };
-		9D1C57C42D78300D0027D25C /* UmaPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D1C57C32D78300D0027D25C /* UmaPickerView.swift */; };
-		9D1C57C62D7830180027D25C /* OkaPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D1C57C52D7830180027D25C /* OkaPickerView.swift */; };
+		9D1C57C42D78300D0027D25C /* UmaSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D1C57C32D78300D0027D25C /* UmaSelectionView.swift */; };
+		9D1C57C62D7830180027D25C /* OkaSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D1C57C52D7830180027D25C /* OkaSelectionView.swift */; };
 		9D1C57C82D7830920027D25C /* ContentView_Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D1C57C72D7830920027D25C /* ContentView_Previews.swift */; };
 		9D8138212D77D9F200946631 /* MahjongScoreApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8138202D77D9F200946631 /* MahjongScoreApp.swift */; };
 		9D8138232D77D9F200946631 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8138222D77D9F200946631 /* ContentView.swift */; };
@@ -44,8 +44,8 @@
 
 /* Begin PBXFileReference section */
 		9D1C57BF2D782E9D0027D25C /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
-		9D1C57C32D78300D0027D25C /* UmaPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmaPickerView.swift; sourceTree = "<group>"; };
-		9D1C57C52D7830180027D25C /* OkaPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OkaPickerView.swift; sourceTree = "<group>"; };
+		9D1C57C32D78300D0027D25C /* UmaSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UmaSelectionView.swift; sourceTree = "<group>"; };
+		9D1C57C52D7830180027D25C /* OkaSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OkaSelectionView.swift; sourceTree = "<group>"; };
 		9D1C57C72D7830920027D25C /* ContentView_Previews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView_Previews.swift; sourceTree = "<group>"; };
 		9D81381D2D77D9F200946631 /* MahjongScore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MahjongScore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D8138202D77D9F200946631 /* MahjongScoreApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MahjongScoreApp.swift; sourceTree = "<group>"; };
@@ -187,8 +187,8 @@
 			children = (
 				9D8138222D77D9F200946631 /* ContentView.swift */,
 				9D81384C2D77DAB800946631 /* ScoreCardView.swift */,
-				9D1C57C32D78300D0027D25C /* UmaPickerView.swift */,
-				9D1C57C52D7830180027D25C /* OkaPickerView.swift */,
+				9D1C57C32D78300D0027D25C /* UmaSelectionView.swift */,
+				9D1C57C52D7830180027D25C /* OkaSelectionView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -341,9 +341,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				9D8138512D77DBCA00946631 /* ScoreCalculator.swift in Sources */,
-				9D1C57C62D7830180027D25C /* OkaPickerView.swift in Sources */,
+				9D1C57C62D7830180027D25C /* OkaSelectionView.swift in Sources */,
 				9D8138232D77D9F200946631 /* ContentView.swift in Sources */,
-				9D1C57C42D78300D0027D25C /* UmaPickerView.swift in Sources */,
+				9D1C57C42D78300D0027D25C /* UmaSelectionView.swift in Sources */,
 				9D81384B2D77DA8A00946631 /* Player.swift in Sources */,
 				9D1C57C02D782E9D0027D25C /* ContentViewModel.swift in Sources */,
 				9D96F8722D793F43001FB557 /* KeyboardToolbar.swift in Sources */,

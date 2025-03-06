@@ -12,7 +12,8 @@ struct ContentView: View {
     // MARK: 状態管理
     @StateObject private var viewModel = ContentViewModel()
     @FocusState private var focusedField: Int?
-    
+    @State private var ignoreTextFieldTap = false
+
     // MARK: - メインビュー
     var body: some View {
         NavigationView {
@@ -24,9 +25,9 @@ struct ContentView: View {
                         .font(.title)
                         .bold()
                         .padding(.top, 20)
-                    
+
                     // MARK: スコア入力欄
-                    ForEach(viewModel.players.indices, id: \ .self) { index in
+                    ForEach(viewModel.players.indices, id: \.self) { index in
                         HStack {
                             Text(viewModel.players[index].name)
                                 .font(.headline)
@@ -35,23 +36,26 @@ struct ContentView: View {
                             
                             TextField(Strings.scorePlaceholder, text: $viewModel.players[index].score)
                                 .keyboardType(.numberPad)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .frame(width: 150, alignment: .leading)
+                                .padding()
+                                .frame(width: 150, height: 40)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.gray, lineWidth: 1)
+                                )
                                 .focused($focusedField, equals: index)
+                                .onTapGesture {
+                                    ignoreTextFieldTap = true
+                                }
                         }
                     }
-                    
+
                     // MARK: ウマ選択
-                    UmaPickerView(selectedUma: $viewModel.selectedUma)
-                        .onTapGesture {
-                            focusedField = nil
-                        }
+                    UmaSelectionView(selectedUma: $viewModel.selectedUma)
+                        .padding(.vertical, 5)
                     
                     // MARK: オカ選択
-                    OkaPickerView(selectedOka: $viewModel.selectedOka)
-                        .onTapGesture {
-                            focusedField = nil
-                        }
+                    OkaSelectionView(selectedOka: $viewModel.selectedOka)
+                        .padding(.bottom, 15)
                     
                     // MARK: 計算ボタン
                     Button(action: viewModel.validateAndCalculate) {
@@ -69,7 +73,7 @@ struct ContentView: View {
                     
                     // MARK: 計算結果の表示
                     VStack {
-                        ForEach(viewModel.rankedPlayers.indices, id: \ .self) { index in
+                        ForEach(viewModel.rankedPlayers.indices, id: \.self) { index in
                             let player = viewModel.rankedPlayers[index]
                             ScoreCardView(player: player, rank: index + 1)
                         }
@@ -79,14 +83,24 @@ struct ContentView: View {
                 .padding()
                 .toolbar {
                     ToolbarItemGroup(placement: .keyboard) {
-                        KeyboardToolbar(focusedField: $focusedField, totalFields: viewModel.players.count)
+                        KeyboardToolbar(
+                            focusedField: $focusedField,
+                            scoreText: Binding(
+                                get: { viewModel.players[focusedField ?? 0].score },
+                                set: { viewModel.players[focusedField ?? 0].score = $0 }
+                            ),
+                            totalFields: viewModel.players.count
+                        )
                     }
                 }
             }
             .navigationBarHidden(true)
             .simultaneousGesture(
                 TapGesture().onEnded {
-                    focusedField = nil
+                    if !ignoreTextFieldTap {
+                        focusedField = nil
+                    }
+                    ignoreTextFieldTap = false
                 }
             )
         }

@@ -38,7 +38,7 @@ struct ScoreCardView: View {
     }
     
     // MARK: - 色のロジック
-    /// 順位によって文字色を変える
+    // 順位によって文字色を変える
     private func getRankColor(_ rank: Int) -> Color {
         switch rank {
         case 1: return .green
@@ -47,7 +47,7 @@ struct ScoreCardView: View {
         }
     }
     
-    /// 順位によって背景色を変える
+    // 順位によって背景色を変える
     private func getBackgroundColor(_ rank: Int) -> Color {
         switch rank {
         case 1:

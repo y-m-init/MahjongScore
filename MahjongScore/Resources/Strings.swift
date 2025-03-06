@@ -23,6 +23,7 @@ struct Strings {
     static let okButton = "OK"
     static let doneButton = "完了"
     static let nextButton = "次へ"
+    static let minusButton = "-"
     // エラータイトル
     static let errorTitle = "入力エラー"
     // エラーメッセージ
@@ -35,9 +36,9 @@ struct Strings {
     static let defaultPlayerName = "プレイヤー"
     // ウマの種類
     static let umaFiveTen = "5-10"
-    static let umaFiveFifteen = "5-15"
+    static let umaFiveFifteen = "5-15（雀魂友人戦ルール）"
     static let umaTenTwenty = "10-20"
-    static let umaTenThirty = "10-30"
+    static let umaTenThirty = "10-30（Mリーグルール）"
     static let umaTwentyThirty = "20-30"
     static let umaOptions = [umaFiveTen, umaFiveFifteen, umaTenTwenty, umaTenThirty, umaTwentyThirty]
     // ウマの説明文

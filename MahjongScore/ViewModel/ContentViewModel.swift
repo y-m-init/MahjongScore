@@ -26,13 +26,13 @@ class ContentViewModel: ObservableObject {
     // MARK: - バリデーション＆計算処理
     /// スコアをバリデーションし、順位点を計算する
     func validateAndCalculate() {
-        // スコアのバリデーション（未入力 or 数値以外をチェック）
+        /// スコアのバリデーション（未入力 or 数値以外をチェック）
         if let error = ScoreCalculator.validateScores(players: players) {
             errorMessage = error
             showError = true
             return
         }
-        // 順位点を計算
+        /// 順位点を計算
         rankedPlayers = ScoreCalculator.calculate(players: players, selectedUma: selectedUma, selectedOka: selectedOka)
     }
 }
