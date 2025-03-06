@@ -26,7 +26,7 @@ struct ContentView: View {
                         .padding(.top, 20)
                     
                     // MARK: スコア入力欄
-                    ForEach(viewModel.players.indices, id: \.self) { index in
+                    ForEach(viewModel.players.indices, id: \ .self) { index in
                         HStack {
                             Text(viewModel.players[index].name)
                                 .font(.headline)
@@ -43,9 +43,15 @@ struct ContentView: View {
                     
                     // MARK: ウマ選択
                     UmaPickerView(selectedUma: $viewModel.selectedUma)
+                        .onTapGesture {
+                            focusedField = nil
+                        }
                     
                     // MARK: オカ選択
                     OkaPickerView(selectedOka: $viewModel.selectedOka)
+                        .onTapGesture {
+                            focusedField = nil
+                        }
                     
                     // MARK: 計算ボタン
                     Button(action: viewModel.validateAndCalculate) {
@@ -63,7 +69,7 @@ struct ContentView: View {
                     
                     // MARK: 計算結果の表示
                     VStack {
-                        ForEach(viewModel.rankedPlayers.indices, id: \.self) { index in
+                        ForEach(viewModel.rankedPlayers.indices, id: \ .self) { index in
                             let player = viewModel.rankedPlayers[index]
                             ScoreCardView(player: player, rank: index + 1)
                         }
@@ -78,6 +84,11 @@ struct ContentView: View {
                 }
             }
             .navigationBarHidden(true)
+            .simultaneousGesture(
+                TapGesture().onEnded {
+                    focusedField = nil
+                }
+            )
         }
     }
 }
