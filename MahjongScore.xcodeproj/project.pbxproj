@@ -22,6 +22,7 @@
 		9D81384D2D77DAB800946631 /* ScoreCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D81384C2D77DAB800946631 /* ScoreCardView.swift */; };
 		9D8138512D77DBCA00946631 /* ScoreCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8138502D77DBCA00946631 /* ScoreCalculator.swift */; };
 		9D8138542D77DDF400946631 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8138532D77DDF400946631 /* Strings.swift */; };
+		9D96F8722D793F43001FB557 /* KeyboardToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D96F8712D793F43001FB557 /* KeyboardToolbar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 		9D81384C2D77DAB800946631 /* ScoreCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreCardView.swift; sourceTree = "<group>"; };
 		9D8138502D77DBCA00946631 /* ScoreCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreCalculator.swift; sourceTree = "<group>"; };
 		9D8138532D77DDF400946631 /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
+		9D96F8712D793F43001FB557 /* KeyboardToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardToolbar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +141,7 @@
 				9D1C57BE2D782E8C0027D25C /* ViewModel */,
 				9D81384E2D77DB0800946631 /* Model */,
 				9D8138522D77DBD500946631 /* Resources */,
+				9D96F8702D793EDB001FB557 /* Util */,
 				9D1C57C22D782F4B0027D25C /* Previews */,
 				9D8138262D77D9F400946631 /* Preview Content */,
 			);
@@ -197,6 +200,14 @@
 				9D8138532D77DDF400946631 /* Strings.swift */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		9D96F8702D793EDB001FB557 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				9D96F8712D793F43001FB557 /* KeyboardToolbar.swift */,
+			);
+			path = Util;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -335,6 +346,7 @@
 				9D1C57C42D78300D0027D25C /* UmaPickerView.swift in Sources */,
 				9D81384B2D77DA8A00946631 /* Player.swift in Sources */,
 				9D1C57C02D782E9D0027D25C /* ContentViewModel.swift in Sources */,
+				9D96F8722D793F43001FB557 /* KeyboardToolbar.swift in Sources */,
 				9D8138212D77D9F200946631 /* MahjongScoreApp.swift in Sources */,
 				9D1C57C82D7830920027D25C /* ContentView_Previews.swift in Sources */,
 				9D8138542D77DDF400946631 /* Strings.swift in Sources */,

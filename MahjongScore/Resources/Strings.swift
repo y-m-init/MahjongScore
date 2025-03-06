@@ -21,6 +21,8 @@ struct Strings {
     // ボタン文言
     static let calculateButton = "計算"
     static let okButton = "OK"
+    static let doneButton = "完了"
+    static let nextButton = "次へ"
     // エラータイトル
     static let errorTitle = "入力エラー"
     // エラーメッセージ
@@ -38,7 +40,6 @@ struct Strings {
     static let umaTenThirty = "10-30"
     static let umaTwentyThirty = "20-30"
     static let umaOptions = [umaFiveTen, umaFiveFifteen, umaTenTwenty, umaTenThirty, umaTwentyThirty]
-
     // ウマの説明文
     static let umaDescriptionFiveFifteen = "※ 5-15：雀魂友人戦ルール"
     static let umaDescriptionTenThirty = "※ 10-30：Mリーグルール"

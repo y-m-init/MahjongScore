@@ -9,8 +9,9 @@ import SwiftUI
 
 struct ContentView: View {
     
-    // MARK: - ViewModel（状態管理）
+    // MARK: 状態管理
     @StateObject private var viewModel = ContentViewModel()
+    @FocusState private var focusedField: Int?
     
     // MARK: - メインビュー
     var body: some View {
@@ -19,37 +20,34 @@ struct ContentView: View {
                 VStack {
                     
                     // MARK: ヘッダー
-                    /// 画面のタイトル
                     Text(Strings.headerTitle)
                         .font(.title)
                         .bold()
                         .padding(.top, 20)
                     
                     // MARK: スコア入力欄
-                    /// 各プレイヤーの名前 & スコア入力欄
                     ForEach(viewModel.players.indices, id: \.self) { index in
                         HStack {
-                            TextField(Strings.namePlaceholder, text: $viewModel.players[index].name)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .frame(width: 80)
+                            Text(viewModel.players[index].name)
+                                .font(.headline)
+                                .frame(width: 50, alignment: .leading)
+                                .padding(.leading, 8)
                             
                             TextField(Strings.scorePlaceholder, text: $viewModel.players[index].score)
                                 .keyboardType(.numberPad)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .frame(width: 120)
+                                .frame(width: 150, alignment: .leading)
+                                .focused($focusedField, equals: index)
                         }
                     }
                     
                     // MARK: ウマ選択
-                    /// ウマの選択（5-10, 10-20 など）
                     UmaPickerView(selectedUma: $viewModel.selectedUma)
                     
                     // MARK: オカ選択
-                    /// オカの選択（あり / なし）
                     OkaPickerView(selectedOka: $viewModel.selectedOka)
                     
                     // MARK: 計算ボタン
-                    /// 計算を実行するボタン
                     Button(action: viewModel.validateAndCalculate) {
                         Text(Strings.calculateButton)
                             .font(.headline)
@@ -64,7 +62,6 @@ struct ContentView: View {
                     }
                     
                     // MARK: 計算結果の表示
-                    /// 計算後の順位点（ポイント）を表示
                     VStack {
                         ForEach(viewModel.rankedPlayers.indices, id: \.self) { index in
                             let player = viewModel.rankedPlayers[index]
@@ -74,6 +71,11 @@ struct ContentView: View {
                     Spacer()
                 }
                 .padding()
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        KeyboardToolbar(focusedField: $focusedField, totalFields: viewModel.players.count)
+                    }
+                }
             }
             .navigationBarHidden(true)
         }
