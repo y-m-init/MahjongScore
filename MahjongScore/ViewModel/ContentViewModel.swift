@@ -11,7 +11,7 @@ import SwiftUI
 class ContentViewModel: ObservableObject {
     // MARK: - プロパティ
     /// プレイヤーのリスト（名前・スコア・順位点）
-    @Published var players: [Player] = Strings.defaultPlayers.map { Player(name: $0, score: "", rankScore: 0) }
+    @Published var players: [Player] = Strings.players.map { Player(name: $0, score: "", rankScore: 0) }
     /// 選択されたウマ（デフォルトは 10-30）
     @Published var selectedUma = Strings.umaTenThirty
     /// 選択されたオカ（デフォルトは「あり」）

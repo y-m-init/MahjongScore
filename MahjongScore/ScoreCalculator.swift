@@ -59,7 +59,7 @@ struct ScoreCalculator {
         /// スコアをIntに変換し、降順ソート
         var sortedPlayers = players.compactMap { player -> Player? in
             guard let score = Int(player.score) else { return nil }
-            return Player(name: player.name.isEmpty ? Strings.defaultPlayerName : player.name, score: "\(score)", rankScore: 0)
+            return Player(name: player.name, score: "\(score)", rankScore: 0)
         }.sorted { Int($0.score)! > Int($1.score)! }
         
         /// 30,000点（基準点）との差を計算（1000点単位のポイント変換 / 切り捨て）
