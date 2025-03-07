@@ -16,10 +16,10 @@ struct ContentView: View {
     @FocusState private var focusedField: Int?
     /// タップ判定の制御用
     @State private var ignoreTextFieldTap = false
-
+    
     // MARK: - メインビュー
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack {
                     
@@ -28,7 +28,7 @@ struct ContentView: View {
                         .font(.title)
                         .bold()
                         .padding(.top, 20)
-
+                    
                     // MARK: スコア入力欄
                     ForEach(viewModel.players.indices, id: \.self) { index in
                         HStack {
@@ -51,7 +51,7 @@ struct ContentView: View {
                                 }
                         }
                     }
-
+                    
                     // MARK: ウマ選択
                     UmaSelectionView(selectedUma: $viewModel.selectedUma)
                         .padding(.vertical, 5)
