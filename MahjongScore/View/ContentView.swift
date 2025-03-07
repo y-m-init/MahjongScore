@@ -25,8 +25,8 @@ struct ContentView: View {
                     
                     // MARK: ヘッダー
                     Text(Strings.headerTitle)
-                        .font(.title)
-                        .bold()
+                        .font(.largeTitle.bold())
+                        .multilineTextAlignment(.center)
                         .padding(.top, 20)
                     
                     // MARK: スコア入力欄
@@ -63,12 +63,13 @@ struct ContentView: View {
                     // MARK: 計算ボタン
                     Button(action: viewModel.validateAndCalculate) {
                         Text(Strings.calculateButton)
-                            .font(.headline)
-                            .frame(width: 100, height: 50)
+                            .font(.title2.bold())
+                            .frame(width: 130, height: 50)
                             .background(Color.blue)
                             .foregroundColor(.white)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                             .shadow(radius: 2)
+                            .padding(.bottom, 15)
                     }
                     /// 入力エラー時のアラート表示
                     .alert(isPresented: $viewModel.showError) {
