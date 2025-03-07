@@ -10,8 +10,11 @@ import SwiftUI
 struct ContentView: View {
     
     // MARK: 状態管理
+    /// データ管理用viewModel
     @StateObject private var viewModel = ContentViewModel()
+    /// フォーカス管理（現在選択中のTextField）
     @FocusState private var focusedField: Int?
+    /// タップ判定の制御用
     @State private var ignoreTextFieldTap = false
 
     // MARK: - メインビュー
@@ -67,6 +70,7 @@ struct ContentView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                             .shadow(radius: 2)
                     }
+                    /// 入力エラー時のアラート表示
                     .alert(isPresented: $viewModel.showError) {
                         Alert(title: Text(Strings.errorTitle), message: Text(viewModel.errorMessage), dismissButton: .default(Text(Strings.okButton)))
                     }
@@ -81,6 +85,7 @@ struct ContentView: View {
                     Spacer()
                 }
                 .padding()
+                // MARK: - キーボードカスタムツールバー（マイナスボタン / 次へボタン）
                 .toolbar {
                     ToolbarItemGroup(placement: .keyboard) {
                         KeyboardToolbar(
@@ -95,6 +100,7 @@ struct ContentView: View {
                 }
             }
             .navigationBarHidden(true)
+            // MARK: - 枠外タップ時にキーボードを閉じる
             .simultaneousGesture(
                 TapGesture().onEnded {
                     if !ignoreTextFieldTap {
