@@ -8,59 +8,38 @@
 import SwiftUI
 
 struct ContentView: View {
-    
-    // MARK: 状態管理
-    /// データ管理用viewModel
+
     @StateObject private var viewModel = ContentViewModel()
-    /// フォーカス管理（現在選択中のTextField）
     @FocusState private var focusedField: Int?
-    /// タップ判定の制御用
     @State private var ignoreTextFieldTap = false
-    
-    // MARK: - メインビュー
+
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack {
-                    
-                    // MARK: ヘッダー
+                VStack(spacing: 16) {
                     Text(Strings.headerTitle)
                         .font(.largeTitle.bold())
                         .multilineTextAlignment(.center)
                         .padding(.top, 20)
-                    
-                    // MARK: スコア入力欄
-                    ForEach(viewModel.players.indices, id: \.self) { index in
-                        HStack {
-                            Text(viewModel.players[index].name)
-                                .font(.headline)
-                                .frame(width: 50, alignment: .leading)
-                                .padding(.leading, 8)
-                            
-                            TextField(Strings.scorePlaceholder, text: $viewModel.players[index].score)
-                                .keyboardType(.numberPad)
-                                .padding()
-                                .frame(width: 150, height: 40)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .stroke(Color.gray, lineWidth: 1)
-                                )
-                                .focused($focusedField, equals: index)
-                                .onTapGesture {
-                                    ignoreTextFieldTap = true
-                                }
+
+                    VStack(spacing: 10) {
+                        ForEach(Array(viewModel.players.enumerated()), id: \.element.id) { index, player in
+                            ScoreInputRow(
+                                playerName: player.name,
+                                scoreText: scoreBinding(for: index),
+                                focusedField: $focusedField,
+                                index: index,
+                                ignoreTextFieldTap: $ignoreTextFieldTap
+                            )
                         }
                     }
-                    
-                    // MARK: ウマ選択
+
                     UmaSelectionView(selectedUma: $viewModel.selectedUma)
                         .padding(.vertical, 5)
-                    
-                    // MARK: オカ選択
+
                     OkaSelectionView(selectedOka: $viewModel.selectedOka)
                         .padding(.bottom, 15)
-                    
-                    // MARK: 計算ボタン
+
                     Button(action: viewModel.validateAndCalculate) {
                         Text(Strings.calculateButton)
                             .font(.title2.bold())
@@ -71,37 +50,26 @@ struct ContentView: View {
                             .shadow(radius: 2)
                             .padding(.bottom, 15)
                     }
-                    /// 入力エラー時のアラート表示
-                    .alert(isPresented: $viewModel.showError) {
-                        Alert(title: Text(Strings.errorTitle), message: Text(viewModel.errorMessage), dismissButton: .default(Text(Strings.okButton)))
+                    .accessibilityLabel(Strings.calculateButton)
+
+                    if !viewModel.rankedPlayers.isEmpty {
+                        ResultListView(players: viewModel.rankedPlayers)
                     }
-                    
-                    // MARK: 計算結果の表示
-                    VStack {
-                        ForEach(viewModel.rankedPlayers.indices, id: \.self) { index in
-                            let player = viewModel.rankedPlayers[index]
-                            ScoreCardView(player: player, rank: index + 1)
-                        }
-                    }
+
                     Spacer()
                 }
                 .padding()
-                // MARK: - キーボードカスタムツールバー（マイナスボタン / 次へボタン）
                 .toolbar {
                     ToolbarItemGroup(placement: .keyboard) {
                         KeyboardToolbar(
                             focusedField: $focusedField,
-                            scoreText: Binding(
-                                get: { viewModel.players[focusedField ?? 0].score },
-                                set: { viewModel.players[focusedField ?? 0].score = $0 }
-                            ),
+                            scoreText: toolbarScoreBinding,
                             totalFields: viewModel.players.count
                         )
                     }
                 }
             }
             .navigationBarHidden(true)
-            // MARK: - 枠外タップ時にキーボードを閉じる
             .simultaneousGesture(
                 TapGesture().onEnded {
                     if !ignoreTextFieldTap {
@@ -110,6 +78,77 @@ struct ContentView: View {
                     ignoreTextFieldTap = false
                 }
             )
+            .alert(isPresented: $viewModel.showError) {
+                Alert(
+                    title: Text(Strings.errorTitle),
+                    message: Text(viewModel.errorMessage),
+                    dismissButton: .default(Text(Strings.okButton))
+                )
+            }
+        }
+    }
+
+    private func scoreBinding(for index: Int) -> Binding<String> {
+        Binding(
+            get: { viewModel.scoreInput(at: index) },
+            set: { viewModel.updateScoreInput($0, at: index) }
+        )
+    }
+
+    private var toolbarScoreBinding: Binding<String> {
+        Binding(
+            get: {
+                guard let field = focusedField, viewModel.isValidPlayerIndex(field) else { return "" }
+                return viewModel.scoreInput(at: field)
+            },
+            set: { newValue in
+                guard let field = focusedField, viewModel.isValidPlayerIndex(field) else { return }
+                viewModel.updateScoreInput(newValue, at: field)
+            }
+        )
+    }
+}
+
+private struct ScoreInputRow: View {
+    let playerName: String
+    @Binding var scoreText: String
+    var focusedField: FocusState<Int?>.Binding
+    let index: Int
+    @Binding var ignoreTextFieldTap: Bool
+
+    var body: some View {
+        HStack {
+            Text(playerName)
+                .font(.headline)
+                .frame(width: 60, alignment: .leading)
+                .padding(.leading, 8)
+
+            TextField(Strings.scorePlaceholder, text: $scoreText)
+                .keyboardType(.numberPad)
+                .padding()
+                .frame(width: 170, height: 40)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.gray, lineWidth: 1)
+                )
+                .focused(focusedField, equals: index)
+                .onTapGesture {
+                    ignoreTextFieldTap = true
+                }
+                .accessibilityLabel("\(playerName)\(Strings.scoreInputAccessibility)")
+        }
+    }
+}
+
+private struct ResultListView: View {
+    let players: [Player]
+
+    var body: some View {
+        VStack(spacing: 8) {
+            ForEach(Array(players.enumerated()), id: \.element.id) { index, player in
+                ScoreCardView(player: player, rank: index + 1)
+                    .accessibilityLabel("\(Strings.resultCardAccessibility) \(index + 1)")
+            }
         }
     }
 }

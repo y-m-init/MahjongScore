@@ -7,75 +7,162 @@
 
 import Foundation
 
-struct ScoreCalculator {
-    
-    // MARK: - 定数
-    private static let baseScore = 30_000   // 30,000点基準
-    private static let pointUnit = 1_000    // 1000点単位でポイント換算
-    private static let okaDefaultValue = 20 // オカあり時の加算値
-    
-    // MARK: - ウマの値を取得
-    private static func getUmaValues(uma: String) -> (high: Int, low: Int) {
-        switch uma {
-        case Strings.umaFiveTen: return (10, 5)
-        case Strings.umaFiveFifteen: return (15, 5)
-        case Strings.umaTenTwenty: return (20, 10)
-        case Strings.umaTenThirty: return (30, 10)
-        case Strings.umaTwentyThirty: return (30, 20)
-        default: return (10, 5)
+enum UmaOption: String, CaseIterable, Identifiable {
+    case fiveTen
+    case fiveFifteen
+    case tenTwenty
+    case tenThirty
+    case twentyThirty
+
+    var id: Self { self }
+
+    var displayName: String {
+        switch self {
+        case .fiveTen:
+            return Strings.umaFiveTen
+        case .fiveFifteen:
+            return Strings.umaFiveFifteen
+        case .tenTwenty:
+            return Strings.umaTenTwenty
+        case .tenThirty:
+            return Strings.umaTenThirty
+        case .twentyThirty:
+            return Strings.umaTwentyThirty
         }
     }
-    
-    // MARK: - スコアのバリデーション
-    static func validateScores(players: [Player]) -> String? {
-        var emptyPlayers: [String] = []
-        var invalidPlayers: [String] = []
-        
-        for player in players {
-            let trimmedScore = player.score.trimmingCharacters(in: .whitespaces)
-            if trimmedScore.isEmpty {
-                emptyPlayers.append(player.name)
-            } else if Int(trimmedScore) == nil {
-                invalidPlayers.append(player.name)
-            }
+
+    var points: (high: Int, low: Int) {
+        switch self {
+        case .fiveTen:
+            return (10, 5)
+        case .fiveFifteen:
+            return (15, 5)
+        case .tenTwenty:
+            return (20, 10)
+        case .tenThirty:
+            return (30, 10)
+        case .twentyThirty:
+            return (30, 20)
         }
-        /// 点数未入力の場合
-        if !emptyPlayers.isEmpty {
-            return Strings.errorScoreMissing.replacingOccurrences(of: "{players}", with: emptyPlayers.joined(separator: "、"))
+    }
+}
+
+enum OkaOption: String, CaseIterable, Identifiable {
+    case enabled
+    case disabled
+
+    var id: Self { self }
+
+    var displayName: String {
+        switch self {
+        case .enabled:
+            return Strings.okaEnabled
+        case .disabled:
+            return Strings.okaDisabled
         }
-        /// 数値以外を入力の場合
-        if !invalidPlayers.isEmpty {
-            return Strings.errorScoreInvalid.replacingOccurrences(of: "{players}", with: invalidPlayers.joined(separator: "、"))
+    }
+}
+
+struct RuleSet {
+    let baseScore: Int
+    let pointUnit: Int
+    let okaBonus: Int
+
+    static let standard = RuleSet(baseScore: 30_000, pointUnit: 1_000, okaBonus: 20)
+}
+
+enum TieBreakPolicy {
+    case seatOrder
+}
+
+enum ValidationError: LocalizedError, Equatable {
+    case unsupportedPlayerCount(expected: Int, actual: Int)
+    case missingScores(players: [String])
+
+    var errorDescription: String? {
+        switch self {
+        case let .unsupportedPlayerCount(expected, actual):
+            return Strings.errorUnsupportedPlayerCount(expected: expected, actual: actual)
+        case let .missingScores(players):
+            return Strings.errorScoreMissing(players: players)
         }
-        
+    }
+}
+
+struct ScoreCalculator {
+
+    static func validate(players: [Player], expectedPlayerCount: Int = 4) -> ValidationError? {
+        guard players.count == expectedPlayerCount else {
+            return .unsupportedPlayerCount(expected: expectedPlayerCount, actual: players.count)
+        }
+
+        let missingPlayers = players.compactMap { player in
+            player.score == nil ? player.name : nil
+        }
+
+        if !missingPlayers.isEmpty {
+            return .missingScores(players: missingPlayers)
+        }
+
         return nil
     }
-    
-    // MARK: - 順位点の計算
-    static func calculate(players: [Player], selectedUma: String, selectedOka: String) -> [Player] {
-        let umaValues = getUmaValues(uma: selectedUma)
-        let okaValue = selectedOka == Strings.okaEnabled ? okaDefaultValue : 0
-        
-        /// スコアをIntに変換し、降順ソート
-        var sortedPlayers = players.compactMap { player -> Player? in
-            guard let score = Int(player.score) else { return nil }
-            return Player(name: player.name, score: "\(score)", rankScore: 0)
-        }.sorted { Int($0.score)! > Int($1.score)! }
-        
-        /// 30,000点（基準点）との差を計算（1000点単位のポイント変換 / 切り捨て）
-        for i in 0..<sortedPlayers.count {
-            if let score = Int(sortedPlayers[i].score) {
-                sortedPlayers[i].rankScore = (score - baseScore) / pointUnit
+
+    static func calculate(
+        players: [Player],
+        uma: UmaOption,
+        oka: OkaOption,
+        rules: RuleSet = .standard,
+        tieBreakPolicy: TieBreakPolicy = .seatOrder
+    ) -> Result<[Player], ValidationError> {
+        if let validationError = validate(players: players) {
+            return .failure(validationError)
+        }
+
+        let sortedPlayers = sortPlayers(players, tieBreakPolicy: tieBreakPolicy)
+        let scoredPlayers = applyRules(to: sortedPlayers, uma: uma, oka: oka, rules: rules)
+
+        return .success(scoredPlayers)
+    }
+
+    private static func sortPlayers(_ players: [Player], tieBreakPolicy: TieBreakPolicy) -> [Player] {
+        players.sorted { lhs, rhs in
+            let lhsScore = lhs.score ?? .min
+            let rhsScore = rhs.score ?? .min
+
+            if lhsScore != rhsScore {
+                return lhsScore > rhsScore
+            }
+
+            switch tieBreakPolicy {
+            case .seatOrder:
+                return lhs.seatOrder < rhs.seatOrder
             }
         }
-        /// ウマの適用（1位・2位が加点、3位・4位が減点）
-        sortedPlayers[0].rankScore += umaValues.high
-        sortedPlayers[1].rankScore += umaValues.low
-        sortedPlayers[2].rankScore -= umaValues.low
-        sortedPlayers[3].rankScore -= umaValues.high
-        /// オカの適用（1位のプレイヤーにオカを加算）
-        sortedPlayers[0].rankScore += okaValue
-        
-        return sortedPlayers
+    }
+
+    private static func applyRules(
+        to players: [Player],
+        uma: UmaOption,
+        oka: OkaOption,
+        rules: RuleSet
+    ) -> [Player] {
+        var rankedPlayers = players
+
+        for index in rankedPlayers.indices {
+            guard let score = rankedPlayers[index].score else { continue }
+            rankedPlayers[index].rankScore = (score - rules.baseScore) / rules.pointUnit
+        }
+
+        let umaPoints = uma.points
+        rankedPlayers[0].rankScore += umaPoints.high
+        rankedPlayers[1].rankScore += umaPoints.low
+        rankedPlayers[2].rankScore -= umaPoints.low
+        rankedPlayers[3].rankScore -= umaPoints.high
+
+        if oka == .enabled {
+            rankedPlayers[0].rankScore += rules.okaBonus
+        }
+
+        return rankedPlayers
     }
 }

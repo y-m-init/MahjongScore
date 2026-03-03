@@ -8,52 +8,46 @@
 import SwiftUI
 
 struct ScoreCardView: View {
-    
-    // MARK: - 環境変数
-    @Environment(\.colorScheme) var colorScheme
-    
-    // MARK: - プロパティ
+
     let player: Player
     let rank: Int
-    
-    // MARK: - メインビュー
+
     var body: some View {
         VStack {
-            // 順位とプレイヤー名
-            Text("\(rank)\(Strings.rankLabel)\(player.name)")
+            Text("\(rank)\(Strings.rankLabel): \(player.name)")
                 .font(.headline)
-                .foregroundColor(Color.primary)
-    
-            // 順位点（ポイント）
+                .foregroundColor(.primary)
+
             Text(String(format: "%+d", player.rankScore))
                 .font(.title)
                 .bold()
-                .foregroundColor(getRankColor(rank))
+                .foregroundColor(rankColor)
+                .accessibilityLabel("\(Strings.pointLabel) \(player.rankScore)")
         }
         .frame(maxWidth: .infinity)
         .padding()
-        .background(getBackgroundColor(rank))
+        .background(backgroundColor)
         .cornerRadius(10)
         .shadow(radius: 2)
     }
-    
-    // MARK: - 色のロジック
-    // 順位によって文字色を変える
-    private func getRankColor(_ rank: Int) -> Color {
-        switch rank {
-        case 1: return .green
-        case 4: return .red
-        default: return .primary
-        }
-    }
-    
-    // 順位によって背景色を変える
-    private func getBackgroundColor(_ rank: Int) -> Color {
+
+    private var rankColor: Color {
         switch rank {
         case 1:
-            return colorScheme == .dark ? Color.yellow.opacity(0.3) : Color.yellow.opacity(0.3)
+            return .green
+        case 4:
+            return .red
         default:
-            return colorScheme == .dark ? Color.gray.opacity(0.2) : Color.gray.opacity(0.1)
+            return .primary
+        }
+    }
+
+    private var backgroundColor: Color {
+        switch rank {
+        case 1:
+            return Color.yellow.opacity(0.3)
+        default:
+            return Color.gray.opacity(0.1)
         }
     }
 }
